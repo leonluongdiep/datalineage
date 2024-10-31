@@ -1,19 +1,18 @@
 SELECT
     HIERARCHY_SOURCE,
     HIERARCHY_PATH,
-    HIERARCHY_LEVEL,
+    HIERARCHY_LEVEL AS Depth,  -- Die Tiefe des Knotens in der Hierarchie
     HIERARCHY_ORDER,
-    HIERARCHY_DEPTH,
-    HIERARCHY_RANK,
     PATH_STRING
 FROM 
     HIERARCHY (
-        SOURCE SOURCE_COLUMN "Source",
-        TARGET SOURCE_COLUMN "Target",
+        SOURCE COLUMN "Source",
+        TARGET COLUMN "Target",
         CHILD TO PARENT CONNECT BY,
-        ROOT WHERE "Source" = 'A'
+        ROOT WHERE "Source" = 'A'  -- Startknoten der Hierarchie
         HIERARCHY_PATH INTO PATH_STRING,
         LEVEL,
-        HIERARCHY_ORDER,
-        HIERARCHY_DEPTH,
-        HIERARCHY_RANK
+        HIERARCHY_ORDER
+    ) AS HIERARCHY_TABLE -- Hier wird die Tabelle definiert
+ON DATA_RELATIONSHIP -- Hier wird die tatsächliche Tabelle angegeben
+
