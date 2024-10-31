@@ -28,12 +28,12 @@ SAP DBTech JDBC: [257]: sql syntax error: incorrect syntax near """: line 12 col
 
 /***************************************/
 
-WITH Startpunkte AS (
-    SELECT DISTINCT quelle_object_id AS potenzieller_startknoten
-    FROM pd_mapping
-    WHERE quelle_object_id NOT IN (SELECT zield_object_id FROM pd_mapping)
-)
 
+WITH Startpunkte AS (
+    SELECT DISTINCT "QUELLE_OBJECTID" AS potenzieller_startknoten
+    FROM "XT45609"."LD_PD_MAPPING"
+    WHERE "QUELLE_OBJECTID" NOT IN (SELECT "ZIEL_OBJECTID" FROM "XT45609"."LD_PD_MAPPING" )
+)
 SELECT 
     HIERARCHY_SOURCE,
     PATH_STRING AS HIERARCHY_PATH,
@@ -42,14 +42,17 @@ SELECT
 FROM 
     Startpunkte,
     HIERARCHY (
-        SOURCE "quelle_object_id",
-        TARGET "zield_object_id",
+        SOURCE "QUELLE_OBJECTID",
+        TARGET "ZIEL_OBJECTID",
         CHILD TO PARENT CONNECT BY,
-        ROOT WHERE "quelle_object_id" = Startpunkte.potenzieller_startknoten,
+        ROOT WHERE "QUELLE_OBJECTID" = Startpunkte.potenzieller_startknoten,
         LEVEL AS HIERARCHY_LEVEL,
         ORDER AS HIERARCHY_ORDER,
         PATH AS PATH_STRING
     ) 
-    ON pd_mapping 
+    ON "XT45609"."LD_PD_MAPPING" 
     AS pd_mapping_HIERARCHY (HIERARCHY_SOURCE, PATH_STRING, HIERARCHY_LEVEL, HIERARCHY_ORDER);
+Could not execute 'WITH Startpunkte AS ( SELECT DISTINCT "QUELLE_OBJECTID" AS potenzieller_startknoten FROM ...'
 
+/****************/
+SAP DBTech JDBC: [257]: sql syntax error: incorrect syntax near ",": line 14 col 33 (at pos 418)
