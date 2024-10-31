@@ -56,3 +56,60 @@ Could not execute 'WITH Startpunkte AS ( SELECT DISTINCT "QUELLE_OBJECTID" AS po
 
 /****************/
 SAP DBTech JDBC: [257]: sql syntax error: incorrect syntax near ",": line 14 col 33 (at pos 418)
+
+
+/********** option 1 ***********************/
+
+WITH Startpunkte AS (
+    SELECT DISTINCT "QUELLE_OBJECTID" AS potenzieller_startknoten
+    FROM "XT45609"."LD_PD_MAPPING"
+    WHERE "QUELLE_OBJECTID" NOT IN (SELECT "ZIEL_OBJECTID" FROM "XT45609"."LD_PD_MAPPING")
+)
+
+SELECT 
+    Startpunkte.potenzieller_startknoten AS Startknoten,
+    HIERARCHY_SOURCE,
+    PATH_STRING AS HIERARCHY_PATH,
+    HIERARCHY_LEVEL AS Depth, 
+    HIERARCHY_ORDER
+FROM 
+    Startpunkte
+JOIN 
+    HIERARCHY (
+        SOURCE "QUELLE_OBJECTID",
+        TARGET "ZIEL_OBJECTID",
+        CHILD TO PARENT CONNECT BY,
+        ROOT WHERE "QUELLE_OBJECTID" = Startpunkte.potenzieller_startknoten,
+        LEVEL AS HIERARCHY_LEVEL,
+        ORDER AS HIERARCHY_ORDER,
+        PATH AS PATH_STRING
+    ) 
+    ON "XT45609"."LD_PD_MAPPING" 
+    AS pd_mapping_HIERARCHY (HIERARCHY_SOURCE, PATH_STRING, HIERARCHY_LEVEL, HIERARCHY_ORDER);
+
+
+/********** option 2 ***********************/
+
+WITH Startpunkte AS (
+    SELECT DISTINCT "QUELLE_OBJECTID" AS potenzieller_startknoten
+    FROM "XT45609"."LD_PD_MAPPING"
+    WHERE "QUELLE_OBJECTID" NOT IN (SELECT "ZIEL_OBJECTID" FROM "XT45609"."LD_PD_MAPPING")
+)
+SELECT 
+    HIERARCHY_SOURCE,
+    PATH_STRING AS HIERARCHY_PATH,
+    HIERARCHY_LEVEL AS Depth, 
+    HIERARCHY_ORDER
+FROM 
+    HIERARCHY (
+        SOURCE "QUELLE_OBJECTID",
+        TARGET "ZIEL_OBJECTID",
+        CHILD TO PARENT CONNECT BY,
+        ROOT WHERE "QUELLE_OBJECTID" IN (SELECT potenzieller_startknoten FROM Startpunkte),
+        LEVEL AS HIERARCHY_LEVEL,
+        ORDER AS HIERARCHY_ORDER,
+        PATH AS PATH_STRING
+    ) 
+    ON "XT45609"."LD_PD_MAPPING" 
+    AS pd_mapping_HIERARCHY (HIERARCHY_SOURCE, PATH_STRING, HIERARCHY_LEVEL, HIERARCHY_ORDER);
+
