@@ -25,3 +25,31 @@ successfully executed in 31 ms 677 µs  (server processing time: 8 ms 138 µs)
 Fetched 1 row(s) in 0 ms 20 µs (server processing time: 0 ms 0 µs)
 Could not execute 'SELECT HIERARCHY_SOURCE, HIERARCHY_PATH, HIERARCHY_LEVEL, HIERARCHY_LEVEL AS Depth, -- Die Tiefe ...'
 SAP DBTech JDBC: [257]: sql syntax error: incorrect syntax near """: line 12 col 30 (at pos 285)
+
+/***************************************/
+
+WITH Startpunkte AS (
+    SELECT DISTINCT quelle_object_id AS potenzieller_startknoten
+    FROM pd_mapping
+    WHERE quelle_object_id NOT IN (SELECT zield_object_id FROM pd_mapping)
+)
+
+SELECT 
+    HIERARCHY_SOURCE,
+    PATH_STRING AS HIERARCHY_PATH,
+    HIERARCHY_LEVEL AS Depth, 
+    HIERARCHY_ORDER
+FROM 
+    Startpunkte,
+    HIERARCHY (
+        SOURCE "quelle_object_id",
+        TARGET "zield_object_id",
+        CHILD TO PARENT CONNECT BY,
+        ROOT WHERE "quelle_object_id" = Startpunkte.potenzieller_startknoten,
+        LEVEL AS HIERARCHY_LEVEL,
+        ORDER AS HIERARCHY_ORDER,
+        PATH AS PATH_STRING
+    ) 
+    ON pd_mapping 
+    AS pd_mapping_HIERARCHY (HIERARCHY_SOURCE, PATH_STRING, HIERARCHY_LEVEL, HIERARCHY_ORDER);
+
