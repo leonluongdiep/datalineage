@@ -15,4 +15,13 @@ FROM
         HIERARCHY_ORDER
     ) AS HIERARCHY_TABLE -- Hier wird die Tabelle definiert
 ON DATA_RELATIONSHIP -- Hier wird die tatsächliche Tabelle angegeben
+;
 
+
+
+/**********************************/
+
+successfully executed in 31 ms 677 µs  (server processing time: 8 ms 138 µs)
+Fetched 1 row(s) in 0 ms 20 µs (server processing time: 0 ms 0 µs)
+Could not execute 'SELECT HIERARCHY_SOURCE, HIERARCHY_PATH, HIERARCHY_LEVEL, HIERARCHY_LEVEL AS Depth, -- Die Tiefe ...'
+SAP DBTech JDBC: [257]: sql syntax error: incorrect syntax near """: line 12 col 30 (at pos 285)
