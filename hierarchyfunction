@@ -134,3 +134,26 @@ FROM
     ) 
     ON "ADPD-Mapping"                         -- Die Tabelle, die die Hierarchiedaten enthält
     AS HIERARCHY_TABLE (HIERARCHY_PARENT_ID, HIERARCHY_NODE_ID, HIERARCHY_LEVEL, HIERARCHY_ORDER, PATH_STRING);
+
+
+-------------------------------------------------------------------
+
+
+SELECT 
+    HIERARCHY_PARENT_ID AS PARENT_ID,
+    HIERARCHY_NODE_ID AS NODE_ID,
+    HIERARCHY_LEVEL AS Depth,            -- Die Tiefe des Knotens in der Hierarchie
+    HIERARCHY_ORDER AS Node_Order,       -- Reihenfolge des Knotens in der Hierarchie
+    PATH_STRING AS Hierarchy_Path        -- Pfad von der Wurzel zum Knoten
+FROM 
+    HIERARCHY (
+        SOURCE "PARENT_ID",                  -- Quellspalte: Elternknoten
+        TARGET "NODE_ID",                    -- Zielspalte: Kindknoten
+        CHILD TO PARENT CONNECT BY
+        ROOT WHERE "PARENT_ID" IS NULL       -- Falls der Startknoten keinen Elternknoten hat (z. B. NULL)
+        LEVEL AS HIERARCHY_LEVEL,
+        ORDER AS HIERARCHY_ORDER,
+        PATH AS PATH_STRING
+    ) 
+    ON "ADPD-Mapping"                        -- Die Tabelle, die die Hierarchiedaten enthält
+    AS HIERARCHY_TABLE (HIERARCHY_PARENT_ID, HIERARCHY_NODE_ID, HIERARCHY_LEVEL, HIERARCHY_ORDER, PATH_STRING);
