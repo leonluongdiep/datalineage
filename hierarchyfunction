@@ -157,3 +157,11 @@ FROM
     ) 
     ON "ADPD-Mapping"                        -- Die Tabelle, die die Hierarchiedaten enthält
     AS HIERARCHY_TABLE (HIERARCHY_PARENT_ID, HIERARCHY_NODE_ID, HIERARCHY_LEVEL, HIERARCHY_ORDER, PATH_STRING);
+
+---------------------------------
+
+Statement 'select * from LD_HIERARCHY_TAB' 
+successfully executed in 21 ms 732 µs  (server processing time: 0 ms 668 µs)
+Fetched 2 row(s) in 0 ms 4 µs (server processing time: 0 ms 0 µs)
+Could not execute 'SELECT HIERARCHY_PARENT_ID AS PARENT_ID, HIERARCHY_NODE_ID AS NODE_ID, HIERARCHY_LEVEL AS Depth, -- ...'
+SAP DBTech JDBC: [257]: sql syntax error: incorrect syntax near ",": line 9 col 27 (at pos 382)
