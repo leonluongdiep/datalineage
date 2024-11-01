@@ -165,3 +165,23 @@ successfully executed in 21 ms 732 µs  (server processing time: 0 ms 668 µs)
 Fetched 2 row(s) in 0 ms 4 µs (server processing time: 0 ms 0 µs)
 Could not execute 'SELECT HIERARCHY_PARENT_ID AS PARENT_ID, HIERARCHY_NODE_ID AS NODE_ID, HIERARCHY_LEVEL AS Depth, -- ...'
 SAP DBTech JDBC: [257]: sql syntax error: incorrect syntax near ",": line 9 col 27 (at pos 382)
+
+---------------------------------------------------------
+
+
+SELECT 
+    HIERARCHY_PARENT_RANK AS Parent_Rank,
+    HIERARCHY_RANK AS Node_Rank,
+    HIERARCHY_LEVEL AS Depth, 
+    HIERARCHY_ORDER AS Node_Order,
+    "PARENT_ID",
+    "NODE_ID"
+FROM 
+    HIERARCHY (
+        SOURCE "ADPD-Mapping" AS "PARENT_ID" TO "NODE_ID"
+        START WHERE "PARENT_ID" IS NULL
+        SIBLING ORDER BY "NODE_ID"
+        CYCLE BREAKUP
+        ORPHAN ROOT
+    ) 
+    ORDER BY HIERARCHY_RANK;
