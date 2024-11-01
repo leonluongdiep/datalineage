@@ -1,0 +1,49 @@
+
+
+drop table LD_HIERARCHY_TAB;
+
+create table LD_HIERARCHY_TAB as (
+	SELECT
+		tab1.quelle_objectid1 AS PARENT_ID,
+		tab1.ziel_objectid AS NODE_ID,
+		COUNT(*) OVER (PARTITION BY ziel_objectid) AS zaehlung --ROW_NUMBER() OVER (ORDER BY ziel_objectid desc) AS rang
+	FROM
+		(
+			select
+				*,
+				case
+					when quelle_objectid = 'null' then NULL
+					else quelle_objectid
+				end as quelle_objectid1
+			from
+				"XT45609"."LD_PD_MAPPING"
+			WHERE
+				1 = 1 --and "SRC_MODEL_CODE" LIKE '%ZDQ%'
+				and (
+					QUELLE_OBJECTID = '{9D63DF16-7C06-49C0-BF07-07D8BE88E0A8}'
+					or ziel_objectid = '{9D63DF16-7C06-49C0-BF07-07D8BE88E0A8}'
+				)
+			order by
+				ziel_objectid desc
+		) as tab1
+);
+
+
+
+select * from LD_HIERARCHY_TAB;
+
+
+SELECT
+ hierarchy_rank AS rank,
+ hierarchy_tree_size AS tree_size,
+ hierarchy_parent_rank AS parent_rank,
+ hierarchy_level AS level,
+ hierarchy_is_cycle AS is_cycle,
+ hierarchy_is_orphan AS is_orphan,
+ parent_id,
+ node_id
+FROM HIERARCHY (
+ SOURCE LD_HIERARCHY_TAB
+ SIBLING ORDER BY zaehlung
+ CACHE FORCE )
+ORDER BY hierarchy_rank;
