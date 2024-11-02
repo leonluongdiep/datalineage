@@ -91,14 +91,15 @@ FROM HIERARCHY_DESCENDANTS (
 
 /****** 20241102 1725********************/
 
-
+create table pd_hier2 as (
 
 WITH "HIER" AS (
     SELECT * 
     FROM HIERARCHY (
         SOURCE (
-            SELECT "NODE_ID", "PARENT_ID" 
-            FROM t_demo2
+            SELECT "NODE_ID", "PARENT_ID",
+            DENSE_RANK() OVER (ORDER BY "PARENT_ID") AS "HIERARCHY_ID"
+            FROM "LD_HIERARCHY_TAB"
         )
     )
     ORDER BY "HIERARCHY_RANK"
@@ -109,3 +110,6 @@ FROM HIERARCHY_DESCENDANTS (
     START WHERE "PARENT_ID" IS NULL
     )
 
+);
+
+select * from pd_hier2;
