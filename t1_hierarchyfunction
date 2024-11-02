@@ -210,3 +210,41 @@ FROM HIERARCHY_DESCENDANTS (
     START WHERE "PARENT_ID" IS NULL
 );
 
+
+_----------------------1030----
+
+Es scheint, dass es ein Problem mit der SQL-Syntax gibt, insbesondere mit der Art und Weise, wie die Spalten referenziert und die Abfrage strukturiert ist. Ich werde den Code überarbeiten, um sicherzustellen, dass er korrekt ist. Hier ist der angepasste Code:
+
+WITH "HIER" AS (
+    SELECT 
+        "NODE_ID", 
+        "PARENT_ID", 
+        "HIERARCHY_RANK",
+        DENSE_RANK() OVER (ORDER BY "PARENT_ID") AS "HIERARCHY_ID"
+    FROM HIERARCHY (
+        SOURCE (
+            SELECT "NODE_ID", "PARENT_ID" 
+            FROM "LD_HIERARCHY_TAB"
+        )
+    )
+    ORDER BY "HIERARCHY_RANK"
+)
+SELECT 
+    "HIER".*, 
+    CONNECT_BY_ROOT("HIER"."HIERARCHY_ID") AS "ROOT_HIERARCHY_ID"
+FROM HIERARCHY_DESCENDANTS (
+    SOURCE "HIER"
+    START WHERE "PARENT_ID" IS NULL
+);
+
+Erklärung der Änderungen:
+
+Die Verwendung von DENSE_RANK() erstellt eine eindeutige Hierarchie-ID basierend auf der PARENT_ID.
+
+Die Spaltenreferenzen wurden überprüft, um sicherzustellen, dass sie im Kontext der Abfrage korrekt sind.
+
+Der Zugriff auf die HIERARCHY_ID und andere Spalten erfolgt korrekt über den Alias "HIER".
+
+
+Bitte teste diesen Code erneut und teile mir mit, ob er funktioniert oder ob es weitere Fehlermeldungen gibt.
+
