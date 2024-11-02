@@ -12,3 +12,69 @@ select
 "HIERARCHY_DISTANCE",
 "START_RANK"
  from "XT45609"."PD_HIER2"
+
+
+Die Felder, die du aufgelistet hast, sind generierte Attribute einer Hierarchietabelle in SAP HANA. Diese Felder entstehen durch die Anwendung von Hierarchiefunktionen wie HIERARCHY und HIERARCHY_DESCENDANTS und sind essentiell, um die Struktur und Navigation einer Hierarchie zu verstehen. Hier ist eine Erklärung zu jedem Feld:
+1. HIERARCHY_RANK
+
+    Beschreibung: Gibt die Preorder-Position des Knotens in der Hierarchie an. Der Rang zeigt an, in welcher Reihenfolge die Knoten besucht werden, wenn die Hierarchie traversiert wird.
+    Nutzung: Hilfreich zur Identifikation der Position des Knotens im Gesamtranking der Hierarchie.
+
+2. HIERARCHY_TREE_SIZE
+
+    Beschreibung: Zeigt die Anzahl der Knoten, die in dem Teilbaum enthalten sind, der von diesem Knoten ausgeht. Für Wurzelknoten gibt dies die Größe des gesamten Subbaums an.
+    Nutzung: Ermöglicht es, schnell die Größe der Unterhierarchie eines Knotens zu ermitteln.
+
+3. HIERARCHY_PARENT_RANK
+
+    Beschreibung: Der Rang des übergeordneten Knotens. Wenn ein Knoten eine HIERARCHY_PARENT_RANK von 0 hat, ist er eine Wurzel ohne Elternknoten.
+    Nutzung: Identifiziert den direkten Elternknoten eines Knotens.
+
+4. HIERARCHY_ROOT_RANK
+
+    Beschreibung: Der Rang des obersten Wurzelknotens, zu dem der Knoten gehört. Dies ist bei allen Knoten im selben Baum gleich.
+    Nutzung: Hilfreich, um alle Knoten zu gruppieren, die zu demselben Hierarchiebereich gehören.
+
+5. HIERARCHY_LEVEL
+
+    Beschreibung: Zeigt die Tiefe des Knotens in der Hierarchie an, wobei die Wurzelknoten den Level 0 haben.
+    Nutzung: Bestimmt die Hierarchieebene des Knotens und ermöglicht es, Hierarchieebenen zu vergleichen oder zu filtern.
+
+6. HIERARCHY_IS_CYCLE
+
+    Beschreibung: Ein Indikator, ob ein Knoten Teil eines Zyklus ist. Der Wert ist 1, wenn der Knoten in einem Zyklus liegt, und 0 sonst.
+    Nutzung: Verwendet, um potenzielle Probleme mit Zyklen in einer normalerweise baumartigen Struktur zu erkennen.
+
+7. HIERARCHY_IS_ORPHAN
+
+    Beschreibung: Ein Flag, das anzeigt, ob ein Knoten ein Waisenknoten ist, d.h., er ist nicht mit einer Wurzel verbunden. Der Wert ist 1 für Waisenknoten und 0 für normale Knoten.
+    Nutzung: Identifiziert Knoten, die in der Hierarchietabelle isoliert sind.
+
+8. NODE_ID
+
+    Beschreibung: Der eindeutige Identifikator des Knotens.
+    Nutzung: Wird zur Identifizierung des Knotens in der Hierarchie verwendet.
+
+9. PARENT_ID
+
+    Beschreibung: Der Identifikator des übergeordneten Knotens.
+    Nutzung: Verknüpft einen Knoten mit seinem Elternknoten, um die Hierarchiestruktur zu rekonstruieren.
+
+10. HIERARCHY_ID
+
+    Beschreibung: Ein benutzerdefiniertes Feld, das in der ursprünglichen Hierarchiedefinition durch eine analytische Funktion wie DENSE_RANK() erstellt wurde. Dieses Feld kann dazu dienen, Knoten innerhalb ihrer PARENT_ID-Gruppe zu gruppieren.
+    Nutzung: Hilfreich zur Analyse oder Gruppierung von Knoten basierend auf ihrer Position innerhalb von Eltern-Gruppen.
+
+11. HIERARCHY_DISTANCE
+
+    Beschreibung: Gibt die Entfernung (in Hierarchieebenen) zwischen dem Startknoten und dem aktuellen Knoten an.
+    Nutzung: Praktisch, um die Anzahl der Ebenen zu bestimmen, die zwischen Knoten liegen, oder um Pfadlängen zu berechnen.
+
+12. START_RANK
+
+    Beschreibung: Der Rang des Knotens, von dem aus die Navigation oder der Traversal der Hierarchie gestartet wurde.
+    Nutzung: Wird verwendet, um den Ausgangspunkt der hierarchischen Navigation zu identifizieren, besonders in Abfragen, die mit HIERARCHY_DESCENDANTS arbeiten.
+
+Zusammengefasst:
+
+Diese Felder bieten einen detaillierten Überblick über die Struktur und die Eigenschaften von Knoten innerhalb einer Hierarchietabelle in SAP HANA. Sie sind wichtig für die Analyse und das Management hierarchischer Daten und helfen, komplexe Navigations- und Abfrageanforderungen zu erfüllen.
