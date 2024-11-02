@@ -1,4 +1,4 @@
-DrSELECT
+DrDrSELECT
     HIERARCHY_SOURCE,
     HIERARCHY_PATH,
     HIERARCHY_LEVEL AS Depth,  -- Die Tiefe des Knotens in der Hierarchie
@@ -274,6 +274,34 @@ FROM HIERARCHY_DESCENDANTS (
 );
 
 ---------------------------1033-----
+
+WITH "HIER" AS (
+    SELECT 
+        "NODE_ID", 
+        "PARENT_ID", 
+        "HIERARCHY_RANK",
+        DENSE_RANK() OVER (ORDER BY "PARENT_ID") AS "HIERARCHY_ID"
+    FROM HIERARCHY (
+        SOURCE (
+            SELECT "NODE_ID", "PARENT_ID" 
+            FROM "LD_HIERARCHY_TAB"
+        )
+    )
+    ORDER BY "HIERARCHY_RANK"
+)
+SELECT 
+    "HIER"."NODE_ID", 
+    "HIER"."PARENT_ID", 
+    "HIER"."HIERARCHY_RANK", 
+    "HIER"."HIERARCHY_ID",
+    CONNECT_BY_ROOT("HIER"."HIERARCHY_ID") AS "ROOT_HIERARCHY_ID"
+FROM "HIER"
+START WITH "HIER"."PARENT_ID" IS NULL
+CONNECT BY PRIOR "HIER"."NODE_ID" = "HIER"."PARENT_ID";
+
+
+
+-------1033---------
 
 WITH "HIER" AS (
     SELECT 
