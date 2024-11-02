@@ -88,3 +88,24 @@ FROM HIERARCHY_DESCENDANTS (
     SOURCE "HIER"
     START WHERE "PARENT_ID" IS NULL
     )
+
+/****** 20241102 1725********************/
+
+
+
+WITH "HIER" AS (
+    SELECT * 
+    FROM HIERARCHY (
+        SOURCE (
+            SELECT "NODE_ID", "PARENT_ID" 
+            FROM t_demo2
+        )
+    )
+    ORDER BY "HIERARCHY_RANK"
+)
+SELECT * 
+FROM HIERARCHY_DESCENDANTS (
+    SOURCE "HIER"
+    START WHERE "PARENT_ID" IS NULL
+    )
+
