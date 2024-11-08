@@ -1,0 +1,91 @@
+Gerne! In SAP HANA gibt es mehrere Navigationsfunktionen, die nach der Erstellung einer Hierarchie nützlich sind. Diese Funktionen ermöglichen es dir, bestimmte Beziehungen in der Hierarchie wie Nachkommen, Vorfahren, Geschwister und aggregierte Daten effizient abzurufen. Hier sind die wichtigsten Navigationsfunktionen und wie sie funktionieren:
+1. HIERARCHY_DESCENDANTS: Nachkommen eines Knotens abrufen
+
+Diese Funktion gibt alle Nachkommen eines bestimmten Knotens zurück, beginnend bei einem angegebenen Startpunkt in der Hierarchie.
+
+    Verwendung:
+
+    SELECT * 
+    FROM HIERARCHY_DESCENDANTS (
+        SOURCE <Hierarchie-Tabelle>
+        START WHERE <Bedingung für Startknoten>
+    )
+
+    Parameter:
+        SOURCE: Die Quelle ist die Hierarchietabelle, die du generiert hast.
+        START WHERE: Bedingung, die die Startknoten definiert (z.B. WHERE PARENT_ID IS NULL, um von Wurzelknoten zu starten).
+    Anwendungsfall: Zum Abrufen aller Kinder, Enkelkinder usw. eines Knotens, z.B. wenn du alle Mitarbeitenden unter einer bestimmten Abteilungsleitung anzeigen möchtest.
+
+2. HIERARCHY_ANCESTORS: Vorfahren eines Knotens abrufen
+
+Diese Funktion ruft alle Vorfahren eines Knotens bis zum Wurzelknoten ab.
+
+    Verwendung:
+
+    SELECT *
+    FROM HIERARCHY_ANCESTORS (
+        SOURCE <Hierarchie-Tabelle>
+        START WHERE <Bedingung für Startknoten>
+    )
+
+    Parameter:
+        SOURCE: Die Hierarchietabelle, die generiert wurde.
+        START WHERE: Die Startbedingung für die Navigation (z.B. WHERE NODE_ID = 'ID_des_Zielknotens').
+    Anwendungsfall: Ideal, um den Pfad von einem bestimmten Knoten zurück zu seinem Wurzelknoten zu finden, etwa zur Rückverfolgung der Berichtsstruktur.
+
+3. HIERARCHY_SIBLINGS: Geschwisterknoten abrufen
+
+Diese Funktion gibt die Geschwister eines Knotens zurück, d.h. Knoten, die denselben Elternknoten haben.
+
+    Verwendung:
+
+    SELECT *
+    FROM HIERARCHY_SIBLINGS (
+        SOURCE <Hierarchie-Tabelle>
+        START WHERE <Bedingung für Startknoten>
+    )
+
+    Parameter:
+        SOURCE: Die Hierarchietabelle.
+        START WHERE: Bedingung zur Bestimmung des Zielknotens, dessen Geschwister gesucht werden.
+    Anwendungsfall: Praktisch, um alle Abteilungen oder Teams anzuzeigen, die auf derselben Ebene und unter demselben übergeordneten Element stehen.
+
+4. HIERARCHY_DESCENDANTS_AGGREGATE: Aggregation über Nachkommen
+
+Diese Funktion ermöglicht es, aggregierte Werte für alle Nachkommen eines Knotens zu berechnen, z.B. die Summe oder den Durchschnitt eines bestimmten Attributs.
+
+    Verwendung:
+
+    SELECT *
+    FROM HIERARCHY_DESCENDANTS_AGGREGATE (
+        SOURCE <Hierarchie-Tabelle>
+        AGGREGATE (<Aggregatfunktion>)
+        START WHERE <Bedingung für Startknoten>
+    )
+
+    Parameter:
+        AGGREGATE: Bestimmt die Aggregationsfunktion (z.B. SUM(Budget), COUNT(Employee_ID)).
+        SOURCE und START WHERE: Wie bei HIERARCHY_DESCENDANTS.
+    Anwendungsfall: Nützlich, um z.B. das gesamte Budget eines Unternehmensbereichs inklusive aller Unterbereiche zu berechnen.
+
+5. HIERARCHY_ANCESTORS_AGGREGATE: Aggregation über Vorfahren
+
+Ähnlich wie HIERARCHY_DESCENDANTS_AGGREGATE, aber für die Vorfahren eines Knotens.
+
+    Verwendung:
+
+    SELECT *
+    FROM HIERARCHY_ANCESTORS_AGGREGATE (
+        SOURCE <Hierarchie-Tabelle>
+        AGGREGATE (<Aggregatfunktion>)
+        START WHERE <Bedingung für Startknoten>
+    )
+
+    Anwendungsfall: Beispielsweise zur Berechnung der kumulierten Budgetwerte aller übergeordneten Einheiten eines spezifischen Teams oder Projekts.
+
+Wichtige Konzepte bei der Navigation:
+
+    START WHERE: Definiert immer den Startpunkt. Je nach Funktion beginnt der Startpunkt entweder bei einem Wurzel- oder Zielknoten.
+    AGGREGATE: Nützlich für Funktionen wie SUM, AVG, COUNT, um Werte entlang der Hierarchie zu berechnen.
+
+Diese Navigationsfunktionen sind leistungsfähig und bieten flexible Möglichkeiten, um durch Hierarchien zu navigieren und wertvolle Einblicke in die Struktur und Beziehungen in den Daten zu erhalten.
